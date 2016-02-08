@@ -1,6 +1,6 @@
 {
   "name": "aws-ecs-z",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "wrapper of Amazon ECS SDK",
   "main": "index.js",
   "engines": {
