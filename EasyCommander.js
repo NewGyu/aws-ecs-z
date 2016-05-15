@@ -25,9 +25,12 @@ class EasyCommander {
       console.log("AWS_PROFILE=", process.env.AWS_PROFILE);
     }
 
+    /**
+     * 
+     */
     commander.command("runTask <taskName> [args...]")
       .description(`run tasks [${path.join(process.cwd(), self.config.runDefDir, "taskName.js")}]`)
-      .action(function(taskName, args) {
+      .action((taskName, args) => {
         co(function* () {
           Task.AwsOpts = self.config.awsOpts;
           let runDef = new Task(loadTaskRunDef());
@@ -48,32 +51,37 @@ class EasyCommander {
           }
         }
       });
-
-    commander.command("deployTaskDef")
+      
+    /**
+     * 
+     */
+    commander.command("deployTaskDef [taskDefName]")
       .description(`create or replace TaskDefinition [${path.join(process.cwd(), self.config.taskDefDir, "*.js")}]`)
-      .action(function() {
+      .action((taskDefName) => {
+        TaskDefinition.AwsOpts = self.config.awsOpts;
+        let fileSearchPath = path.join(process.cwd(), self.config.taskDefDir,  (taskDefName ? `${taskDefName}.js` : "*.js"));
+        console.log(`searching ... [${fileSearchPath}]`);
+        let taskdefs = glob.sync(fileSearchPath).map(f => new TaskDefinition(require(f)));
         co(function* () {
-          TaskDefinition.AwsOpts = self.config.awsOpts;
-          let taskdefs = glob.sync(path.join(process.cwd(), self.config.taskDefDir, "*.js"))
-            .map(f => require(f))
-            .map(json => new TaskDefinition(json));
-
           yield taskdefs.map(td => td.createOrUpdate());
           process.exit(0);
-        }).catch(function(err) {
+        }).catch(err => {
           console.error("operation failed!", err, err.stack);
           process.exit(1);
         });
       });
 
-    commander.command("deployService")
+    /**
+     * 
+     */
+    commander.command("deployService [serviceName]")
       .description(`create or replace Service [${self.config.serviceDefDir}/*.js]`)
-      .action(function() {
+      .action((serviceName) => {
+        Service.AwsOpts = self.config.awsOpts;
+        let fileSearchPath = path.join(process.cwd(), self.config.serviceDefDir,  (serviceName ? `${serviceName}.js` : "*.js"));
+        console.log(`searching ... [${fileSearchPath}]`);
+        let services = glob.sync(fileSearchPath).map(f => new Service(require(f)));
         co(function* () {
-          Service.AwsOpts = self.config.awsOpts;
-          let services = glob.sync(path.join(process.cwd(), self.config.serviceDefDir, "*.js"))
-            .map(f => require(f))
-            .map(json => new Service(json));
           let r = yield services.map(sv => sv.createOrUpdate());
           console.log(r);
           process.exit(0);

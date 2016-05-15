@@ -1,6 +1,6 @@
 {
   "name": "aws-ecs-z",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "wrapper of Amazon ECS SDK",
   "main": "index.js",
   "engines": {
@@ -16,7 +16,7 @@
   "author": "NewGyu",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NewGyu/amazon-ecs-z"
+    "url": "https://github.com/NewGyu/aws-ecs-z"
   },
   "license": "Apache-2.0",
   "dependencies": {
