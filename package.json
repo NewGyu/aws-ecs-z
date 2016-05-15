@@ -16,7 +16,7 @@
   "author": "NewGyu",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NewGyu/amazon-ecs-z"
+    "url": "https://github.com/NewGyu/aws-ecs-z"
   },
   "license": "Apache-2.0",
   "dependencies": {
